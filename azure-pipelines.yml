@@ -1,0 +1,25 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- checkout: self
+
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: '1.15.9'
+
+- task: AzureCLI@2
+  displayName: Terraform Init Validate Plan Apply
+  inputs:
+    azureSubscription: 'SP-Azure'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      terraform init
+      terraform validate
+      terraform plan -out=tfplan
+      terraform apply -auto-approve tfplan
